@@ -3,7 +3,7 @@ package com.zikovam.rest;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IndividualsMockedData {
+class IndividualsMockedData {
     private List<Individual> individuals;
     //counter for changes (every 100 changes will start a delay)
     private int changeChecker;
@@ -25,12 +25,21 @@ public class IndividualsMockedData {
         individuals.add(new Individual(3, "Kovalev Iliya Izrailevich", "199-900-381-81", "22.10.1990"));
     }
 
-    //get all individuals
+    /**
+     * Get all entries from list
+     *
+     * @return all stored individuals
+     */
     public List<Individual> fetchIndividuals(){
         return individuals;
     }
 
-    //get Individuals by SNILS
+    /**
+     * Getting Individual by SNILS
+     *
+     * @param snils - SNILS for searching
+     * @return finded individual
+     */
     public Individual getIndividualBySnils (String snils){
         for (Individual individual :
                 individuals) {
@@ -41,16 +50,35 @@ public class IndividualsMockedData {
         return null;
     }
 
-    //create Individual
+    /**
+     * Create one Individual, and put it in the list
+     *
+     * @param name - name of the individual
+     * @param snils - SNILS of the individual
+     * @param dateBirth - BirthDate of the individual
+     * @return new individual
+     */
     public Individual createIndividual(String name, String snils, String dateBirth){
-        //TODO: add id generator
-        int id = 4;
-        Individual individual = new Individual(id, name, snils, dateBirth);
-        individuals.add(individual);
-        changeChecker++;
-        return individual;
+        //if we already store such snils, we need to send an error
+        if (getIndividualBySnils(snils) == null) {
+            int id = idGenerator();
+            Individual individual = new Individual(id, name, snils, dateBirth);
+            individuals.add(individual);
+            changeChecker++;
+            return individual;
+        } else {
+            return null;
+        }
     }
 
+    /**
+     * Updating one individual from the list
+     *
+     * @param name - new name of the individual
+     * @param snils - new SNILS of the individual
+     * @param dateBirth - new BirthDate of the individual
+     * @return updated individual
+     */
     public Individual updateIndividual (String name, String snils, String dateBirth){
         for (Individual individual:
                 individuals){
@@ -70,11 +98,46 @@ public class IndividualsMockedData {
         return null;
     }
 
-    //some additional methods for technical use
-    public int getChangeChecker () {
+    /**
+     * Getting current number of changes
+     *
+     * @return ChangeChecker counter
+     */
+    int getChangeChecker () {
         return changeChecker;
     }
-    public int getEntriesNum () {
+
+    /**
+     * Resetting ChangeChecker counter
+     */
+    void resetChangeChecker () {
+        changeChecker = 0;
+    }
+
+    /**
+     * Getting size of the individuals list
+     *
+     * @return number of entries in the individuals list
+     */
+    int getEntriesNum () {
         return individuals.size();
+    }
+
+    /**
+     * Method for generating ubique id
+     * Working by adding +1 to max id in current list of entries
+     * (Yes, this isn't the most productive way)
+     *
+     * @return unique id for saving new individual
+     */
+    private int idGenerator(){
+        int id = 4;
+        for (Individual individual :
+                individuals) {
+            if (individual.getId()>=id){
+                id = individual.getId()+1;
+            }
+        }
+        return id;
     }
 }

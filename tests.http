@@ -19,7 +19,7 @@ Accept: application/json
 POST http://localhost:8080/individuals
 Content-Type: application/json
 
-{"name": "Zalupa Hui Pipiskin",
+{"name": "Panin Pes Pavlovich",
  "snils": "000-000-000-00",
  "dateBirth": "12.12.2018"}
 
