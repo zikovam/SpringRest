@@ -124,7 +124,7 @@ class IndividualsMockedData {
     }
 
     /**
-     * Method for generating ubique id
+     * Method for generating unique id
      * Working by adding +1 to max id in current list of entries
      * (Yes, this isn't the most productive way)
      *

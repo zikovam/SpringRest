@@ -3,7 +3,7 @@
 ##Wrote on springBoot, maven
 ##All data stored inside the application
 
-###Full description of task (in Russian, because I'm too ;azy for translation)
+###Full description of task (in Russian, because I'm too lazy for translation)
 
 Для нужд районной поликлиники необходимо разработать сервис по учету обслуживаемых физических лиц (ФЛ).
 Сервис должен предоставлять 3 метода: создание, поиск и редактирование (замена) данных ФЛ.

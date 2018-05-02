@@ -1,6 +1,9 @@
 package com.zikovam.rest;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -9,9 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
+@PropertySource ("classpath:config.properties")
 public class LogInterceptor implements HandlerInterceptor {
     private Logger log = org.slf4j.LoggerFactory.getLogger(this.getClass());
     private IndividualsMockedData individualsMockedData = IndividualsMockedData.getInstance();
+
+    @Autowired
+    private Environment env;
 
     @Override
     public boolean preHandle (HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) {
@@ -39,10 +46,14 @@ public class LogInterceptor implements HandlerInterceptor {
         log.info("Request URL::" + httpServletRequest.getRequestURL().toString()
                 + ":: Time Taken=" + (System.currentTimeMillis() - startTime));
 
-        if (individualsMockedData.getChangeChecker() == 4){
+        //getting properties for delay
+        int limit = Integer.parseInt(env.getProperty("com.zikovam.constant.changesLimit"));
+
+        if (individualsMockedData.getChangeChecker() == limit) {
             log.info("We reached the limit of changes, starting delay");
             //setting delay for a fewer time than in the task, you could change it
-            Thread.sleep(6000);
+            int delay = Integer.parseInt(env.getProperty("com.zikovam.constant.delay"));
+            Thread.sleep(delay);
             individualsMockedData.resetChangeChecker();
             log.info("Completed task");
         }

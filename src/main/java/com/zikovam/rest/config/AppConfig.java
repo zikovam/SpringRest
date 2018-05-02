@@ -1,5 +1,6 @@
-package com.zikovam.rest;
+package com.zikovam.rest.config;
 
+import com.zikovam.rest.LogInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
