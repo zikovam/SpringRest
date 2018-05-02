@@ -5,7 +5,6 @@ import java.util.List;
 
 class IndividualsMockedData {
     private List<Individual> individuals;
-    //counter for changes (every 100 changes will start a delay)
     private int changeChecker;
 
     //Creating singleton by private static inner class
@@ -125,19 +124,12 @@ class IndividualsMockedData {
 
     /**
      * Method for generating unique id
-     * Working by adding +1 to max id in current list of entries
-     * (Yes, this isn't the most productive way)
+     * adding +1 to size of the list
+     * (because we can't delete from the list, and we can't change actual id)
      *
      * @return unique id for saving new individual
      */
     private int idGenerator(){
-        int id = 4;
-        for (Individual individual :
-                individuals) {
-            if (individual.getId()>=id){
-                id = individual.getId()+1;
-            }
-        }
-        return id;
+        return individuals.size()+1;
     }
 }

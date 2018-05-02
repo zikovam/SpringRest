@@ -28,6 +28,13 @@ public class MainController {
         return individualsMockedData.createIndividual(name, snils, dateBirth);
     }
 
+    /**
+     * Updates one entity from the list
+     * It search by SNILS number and change entry if exist
+     *
+     * @param json - data for searching and changing
+     * @return - updated individual
+     */
     @PutMapping ("/individuals")
     public Individual update(@RequestBody ObjectNode json){
         String name = json.get("name").asText();

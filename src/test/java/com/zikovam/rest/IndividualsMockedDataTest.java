@@ -1,45 +1,89 @@
 package com.zikovam.rest;
 
+import org.junit.Before;
+import org.junit.Test;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class IndividualsMockedDataTest {
 
     private IndividualsMockedData individualsMockedData = IndividualsMockedData.getInstance();
+    private static final String SNILS = "666-666-666-66";
 
-    @org.junit.Test
-    public void fetchIndividuals () {
+    @Before
+    public void resetSingleton() throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+        // Get the private field
+        final Field field = individualsMockedData.getClass().getDeclaredField("individuals");
+        field.setAccessible(true);
+        // Sets the field to the new value for this instance
+        final List<Individual> individuals = new ArrayList<>();
+        individuals.add(new Individual(1, "Pupkin Vasiliy Gennadyevich", "123-456-789-01", "01.01.1970"));
+        individuals.add(new Individual(2, "Popkin Ivan Vasilyevich", "463-436-384-46", "03.04.1980"));
+        individuals.add(new Individual(3, "Kovalev Iliya Izrailevich", "199-900-381-81", "22.10.1990"));
+        field.set(individualsMockedData, individuals);
+    }
+
+    @Test
+    public void getAllEntries () {
         assertEquals(individualsMockedData.getEntriesNum(), 3);
     }
 
-    @org.junit.Test
+    @Test
     public void getIndividualByActualSnils () {
         //SNILS of default person "Pupkin Vasiliy Gennadyevich", "123-456-789-01", "01.01.1970"
-        final String SNILS = "123-456-789-01";
-        Individual individual = individualsMockedData.getIndividualBySnils(SNILS);
+        final String snils = "123-456-789-01";
+        Individual individual = individualsMockedData.getIndividualBySnils(snils);
         assertEquals(individual.getDateBirth(), "01.01.1970");
         assertEquals(individual.getName(), "Pupkin Vasiliy Gennadyevich");
     }
 
-    @org.junit.Test
+    @Test
     public void getIndividualByNonExistingSnils () {
-        final String SNILS = "666-666-666-66";
         Individual individual = individualsMockedData.getIndividualBySnils(SNILS);
         assertNull(individual);
     }
 
-    @org.junit.Test
-    public void createIndividual () {
-        final String snils = "666-666-666-66";
+    @Test
+    public void createActualIndividual () {
         final String name = "Testovyi Test Testovich";
         final String dateBirth = "06.06.2006";
-        Individual result = individualsMockedData.createIndividual(name, snils, dateBirth);
+        Individual result = individualsMockedData.createIndividual(name, SNILS, dateBirth);
         assertEquals(result.getName(), name);
         assertEquals(individualsMockedData.getEntriesNum(), 4);
-        assertEquals(result.getId(), 4);
+        assertEquals(result.getId(), individualsMockedData.fetchIndividuals().size());
     }
 
-    @org.junit.Test
-    public void updateIndividual () {
-        System.out.println(individualsMockedData.getEntriesNum());
+    @Test
+    public void createDuplicateIndividual () {
+        final String name = "Testovyi Test Testovich";
+        final String snils = "123-456-789-01";
+        final String dateBirth = "06.06.2006";
+        Individual result = individualsMockedData.createIndividual(name, snils, dateBirth);
+        assertNull(result);
     }
+
+    @Test
+    public void updateActualIndividual () {
+        final String name = "Tuleev Viktor Fedorovich";
+        final String snils = "123-456-789-01";
+        final String dateBirth = "01.05.1941";
+
+        Individual individual = individualsMockedData.updateIndividual(name, snils, dateBirth);
+        assertEquals(individual, individualsMockedData.getIndividualBySnils(snils));
+        assertEquals(individual.getId(), 1);
+    }
+
+    @Test
+    public void updateNotExistedIndividual () {
+        final String name = "Tuleev Viktor Fedorovich";
+        final String dateBirth = "01.05.1941";
+
+        Individual individual = individualsMockedData.updateIndividual(name, SNILS, dateBirth);
+        assertNull(individual);
+    }
+
 }
