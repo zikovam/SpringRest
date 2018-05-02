@@ -12,10 +12,11 @@ import static org.junit.Assert.*;
 public class IndividualsMockedDataTest {
 
     private IndividualsMockedData individualsMockedData = IndividualsMockedData.getInstance();
-    private static final String SNILS = "666-666-666-66";
+    private static final String SNILS_NEW = "666-666-666-66";
+    private static final String SNILS_EXISTED = "123-456-789-01";
 
     @Before
-    public void resetSingleton() throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+    public void resetSingleton() throws NoSuchFieldException, IllegalAccessException {
         // Get the private field
         final Field field = individualsMockedData.getClass().getDeclaredField("individuals");
         field.setAccessible(true);
@@ -34,16 +35,15 @@ public class IndividualsMockedDataTest {
 
     @Test
     public void getIndividualByActualSnils () {
-        //SNILS of default person "Pupkin Vasiliy Gennadyevich", "123-456-789-01", "01.01.1970"
-        final String snils = "123-456-789-01";
-        Individual individual = individualsMockedData.getIndividualBySnils(snils);
+        //SNILS_NEW of default person "Pupkin Vasiliy Gennadyevich", "123-456-789-01", "01.01.1970"
+        Individual individual = individualsMockedData.getIndividualBySnils(SNILS_EXISTED);
         assertEquals(individual.getDateBirth(), "01.01.1970");
         assertEquals(individual.getName(), "Pupkin Vasiliy Gennadyevich");
     }
 
     @Test
     public void getIndividualByNonExistingSnils () {
-        Individual individual = individualsMockedData.getIndividualBySnils(SNILS);
+        Individual individual = individualsMockedData.getIndividualBySnils(SNILS_NEW);
         assertNull(individual);
     }
 
@@ -51,7 +51,7 @@ public class IndividualsMockedDataTest {
     public void createActualIndividual () {
         final String name = "Testovyi Test Testovich";
         final String dateBirth = "06.06.2006";
-        Individual result = individualsMockedData.createIndividual(name, SNILS, dateBirth);
+        Individual result = individualsMockedData.createIndividual(name, SNILS_NEW, dateBirth);
         assertEquals(result.getName(), name);
         assertEquals(individualsMockedData.getEntriesNum(), 4);
         assertEquals(result.getId(), individualsMockedData.fetchIndividuals().size());
@@ -60,20 +60,18 @@ public class IndividualsMockedDataTest {
     @Test
     public void createDuplicateIndividual () {
         final String name = "Testovyi Test Testovich";
-        final String snils = "123-456-789-01";
         final String dateBirth = "06.06.2006";
-        Individual result = individualsMockedData.createIndividual(name, snils, dateBirth);
+        Individual result = individualsMockedData.createIndividual(name, SNILS_EXISTED, dateBirth);
         assertNull(result);
     }
 
     @Test
     public void updateActualIndividual () {
         final String name = "Tuleev Viktor Fedorovich";
-        final String snils = "123-456-789-01";
         final String dateBirth = "01.05.1941";
 
-        Individual individual = individualsMockedData.updateIndividual(name, snils, dateBirth);
-        assertEquals(individual, individualsMockedData.getIndividualBySnils(snils));
+        Individual individual = individualsMockedData.updateIndividual(name, SNILS_EXISTED, dateBirth);
+        assertEquals(individual, individualsMockedData.getIndividualBySnils(SNILS_EXISTED));
         assertEquals(individual.getId(), 1);
     }
 
@@ -82,7 +80,7 @@ public class IndividualsMockedDataTest {
         final String name = "Tuleev Viktor Fedorovich";
         final String dateBirth = "01.05.1941";
 
-        Individual individual = individualsMockedData.updateIndividual(name, SNILS, dateBirth);
+        Individual individual = individualsMockedData.updateIndividual(name, SNILS_NEW, dateBirth);
         assertNull(individual);
     }
 
